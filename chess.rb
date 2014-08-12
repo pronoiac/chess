@@ -44,6 +44,21 @@ class Board
 end
 
 class Piece
+  attr_reader :position, :board, :color
+  
+  DIAGONALS = [
+    [-1, -1], [+1, -1], 
+    [-1, +1], [+1, +1]
+  ]
+
+  UP_DOWN = [
+            [0, -1],
+    [-1, 0],        [+1, 0],
+            [0, +1]
+  ]
+  
+  BOTH = DIAGONALS + UP_DOWN
+    
   # each piece has type, pos, board, color, moves (which lists valid moves)
   def initialize(position, board, color)
     # type.initialize()
@@ -60,164 +75,125 @@ class Piece
     return false unless x.between?(0, 7) && y.between?(0, 7)
     true
   end
-  
-  def blocked?(x, y)
-    false
-  end
 end
 
 class SlidingPiece < Piece
   def moves
-    #calls #move_dirs on each piece
+    moves_array = []
+    move_dirs.each do |dx, dy|
+      old_x, old_y = @position
+      while true
+        new_x, new_y = old_x + dx, old_y + dy
+        break unless still_on_board?(new_x, new_y)
+        square = @board[[new_x, new_y]]
+        unless square.nil?
+          if square.color == self.color
+            break
+          else 
+            moves_array << [new_x, new_y]
+            break
+          end
+        end        
+        moves_array << [new_x, new_y]
+        old_x, old_y = new_x, new_y
+      end
+    end
+    moves_array  
   end
 end
 
 class SteppingPiece < Piece
+  KNIGHTS_DELTA = [
+   [-1, -2], [-1, +2], [+1, -2], [+1, +2],
+   [-2, -1], [-2, +1], [+2, -1], [+2, +1]
+  ]
+
   def moves
     #calls #move_dirs on current piece
-  end
-end
-
-class Rook < SlidingPiece
-  def move_dirs
-    # redefined by sliding piece subclasses - Bishop, Rook, Queen
-  end
-end
-
-class Knight < SteppingPiece
-  def move_dirs
-    delta = [
-     [-1, -2], [-1, +2], [+1, -2], [+1, +2],
-     [-2, -1], [-2, +1], [+2, -1], [+2, +1]
-    ]
     moves_array = []
     old_x, old_y = @position
-    delta.each do |dx, dy|
+    move_dirs.each do |dx, dy|
       new_x, new_y = old_x + dx, old_y + dy
       next unless still_on_board?(new_x, new_y)
+      
+      square = @board[[new_x, new_y]]
+      next unless square.nil? || square.color == self.color
 
-      # TODO: blocked by another piece of same color? should be another method.
-      
-      
       # cool? then add to results.
       moves_array << [new_x, new_y] 
     end
     moves_array
-  end # Knight, moves
+  end
 end
 
-DIAGONALS = [
-  [-1, -1], [+1, -1], 
-  [-1, +1], [+1, +1]
-]
 
-UP_DOWN = [
-          [0, -1],
-  [-1, 0],        [+1, 0],
-          [0, +1]
-]
-
-BOTH = DIAGONALS + UP_DOWN
+class Knight < SteppingPiece
+  def move_dirs
+    KNIGHTS_DELTA  
+  end
+end
 
 class Bishop < SlidingPiece
   def move_dirs
-    moves_array = []
-    # debugger
-    DIAGONALS.each do |dx, dy|
-      old_x, old_y = @position
-      until blocked?(old_x, old_y)
-        new_x, new_y = old_x + dx, old_y + dy
-        # still on the board? 
-        break unless still_on_board?(new_x, new_y)
-        # TODO: being blocked? 
-        moves_array << [new_x, new_y]
-        old_x, old_y = new_x, new_y
-      end
-    end
-    moves_array  
+    DIAGONALS
   end
 end
 
 class Rook < SlidingPiece
   def move_dirs
-    moves_array = []
-    # debugger
-    UP_DOWN.each do |dx, dy|
-      old_x, old_y = @position
-      until blocked?(old_x, old_y)
-        new_x, new_y = old_x + dx, old_y + dy
-        # still on the board? 
-        break unless still_on_board?(new_x, new_y)
-        # TODO: being blocked? 
-        moves_array << [new_x, new_y]
-        old_x, old_y = new_x, new_y
-      end
-    end
-    moves_array  
+    UP_DOWN  
   end
 end
 
 class Queen < SlidingPiece
   def move_dirs
-    moves_array = []
-    # debugger
-    BOTH.each do |dx, dy|
-      old_x, old_y = @position
-      until blocked?(old_x, old_y)
-        new_x, new_y = old_x + dx, old_y + dy
-        # still on the board? 
-        break unless still_on_board?(new_x, new_y)
-        # TODO: being blocked? 
-        moves_array << [new_x, new_y]
-        old_x, old_y = new_x, new_y
-      end
-    end
-    moves_array  
+    BOTH
   end
 end
 
 class King < SteppingPiece
   def move_dirs
-    moves_array = []
-    old_x, old_y = @position
-    BOTH.each do |dx, dy|
-      new_x, new_y = old_x + dx, old_y + dy
-      # still on the board? 
-      next unless still_on_board?(new_x, new_y)
-      # being blocked? 
-      moves_array << [new_x, new_y]
-    end
-    moves_array  
+    BOTH
   end
 end
 
 class Pawn < SteppingPiece
-  
+  def move_dirs
+    old_x, old_y = @position
+    moves_array = []
+    offsets = [ [-1, 0], [-2, 0] ]
+    if @color == :black && x == 1
+      # moves_array << 
+    elsif @color == :white && x == 6
+      # add 2 square case
+    end
+    
+  end
 end
 
 def testing
   b = Board.new
-  # b.populate_board
+  b.populate_board
   
   puts "Checking knight's moves (0, 1):"
   kn = Knight.new([1, 0], b, :white)
-  p kn.move_dirs
-  
+  p kn.moves
+
   puts "checking bishop's moves (3, 4):"
   bs = Bishop.new([3, 4], b, :white)
-  p bs.move_dirs
+  p bs.moves
   
-  puts "checking rooks's moves (3, 4):"
+  puts "checking rook's moves (3, 4):"
   r = Rook.new([3, 4], b, :white)
-  p r.move_dirs
+  p r.moves
   
   puts "checking queen's moves (3, 4):"
   q = Queen.new([3, 4], b, :white)
-  p q.move_dirs
+  p q.moves
   
   puts "checking king's moves (3, 4):"
   k = King.new([3, 4], b, :white)
-  p k.move_dirs
+  p k.moves
   
 end
 
