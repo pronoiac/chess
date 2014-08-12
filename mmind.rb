@@ -19,13 +19,18 @@ class Game
     puts "The colors are R G B Y O P, with 4 pegs."
     puts "You have up to #{MAX_TURNS} turns"
           
-    while @turns_taken < MAX_TURNS 
-      puts "You have #{MAX_TURNS - @turns_taken} turns remaining"
-      @turns_taken += 1
-      puts "Enter a guess like BOGY, or in lowercase, poyb."
-      read_guess
-      break if win?
-      check_guess
+    while @turns_taken < MAX_TURNS
+      begin # we'll validate input
+        puts "You have #{MAX_TURNS - @turns_taken} turns remaining"
+        puts "Enter a guess like BOGY, or in lowercase, poyb."
+        read_guess        
+        break if win?
+        check_guess
+        @turns_taken += 1
+      rescue InvalidInput => myError
+        puts myError.message
+        retry
+      end
     end
     
     if win?
@@ -41,9 +46,19 @@ class Game
   end
   
   def read_guess
-    @user_guess = Code.parse(gets.chomp)
+    input = gets.chomp
+    
+    unless input.length == 4
+      raise InvalidInput.new "Length of guess must be 4."
+    end
+      
+    @user_guess = Code.parse(input)
+    
   end
 
+end
+
+class InvalidInput < StandardError
 end
 
 class Code
@@ -75,8 +90,12 @@ class Code
     exact
   end
   
-  def self.parse(input)
-    Code.new input.split.join.upcase.split('')
+  def self.parse(input)    
+    results = input.split.join.upcase.split('')
+    unless results.all? {|letter| COLORS.include?(letter) }
+      raise InvalidInput.new("Only use specified colors")
+    end
+    Code.new results
   end
   
   def self.random
