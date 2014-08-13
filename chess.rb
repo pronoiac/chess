@@ -18,7 +18,7 @@ class Game
   
   def run
     color = :white
-    until checkmate?(:black) || checkmate?(:white)       
+    until @board.checkmate?(:black) || @board.checkmate?(:white)       
       puts @board.display_board
       
       input = @user1.play_turn(color)
