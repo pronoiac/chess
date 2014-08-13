@@ -158,18 +158,42 @@ class King < SteppingPiece
 end
 
 class Pawn < SteppingPiece
-  def move_dirs
+  def moves
+    moves_array = []    
     old_x, old_y = @position
-    moves_array = []
-    offsets = [ [-1, 0], [-2, 0] ]
-    if @color == :black && x == 1
-      # moves_array << 
-    elsif @color == :white && x == 6
-      # add 2 square case
+    if @color == :black
+      dx = +1
+      home_row = 1
+    else # white
+      dx = -1
+      home_row = 6
+    end
+      
+    # moving straight forward
+    new_x = old_x + dx
+    square = @board[[new_x, old_y]]
+    if square.nil?
+      moves_array << [new_x, old_y] 
+      if old_x == home_row   
+        # check square 2. 
+        new_x = new_x + dx
+        square = @board[[new_x, old_y]]
+        moves_array << [new_x, old_y] if square.nil?
+      end
     end
     
+    #check attacks
+    new_x = old_x + dx
+    [-1, +1].each do |dy|
+      new_y = old_y + dy
+      square = @board[[new_x, new_y]]
+      next if square.nil? || square.color == self.color
+      moves_array << [new_x, new_y]
+    end
+    
+    moves_array
   end
-end
+end # /Pawns
 
 def testing
   b = Board.new
@@ -194,6 +218,15 @@ def testing
   puts "checking king's moves (3, 4):"
   k = King.new([3, 4], b, :white)
   p k.moves
+  
+  puts "checking pawn's moves (3, 4):"
+  p = Pawn.new([3, 4], b, :white)
+  p p.moves
+  
+  puts "checking pawn's moves (1, 3):"
+  p = Pawn.new([1, 3], b, :black)
+  p p.moves
+  
   
 end
 
