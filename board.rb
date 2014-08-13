@@ -117,17 +117,41 @@ class Board
     false
   end
   
+  # def display_board
+#     # print header
+#     @board.map do |row|
+#       row.map do |piece|
+#         if piece.class == NilClass
+#           "  "
+#         else
+#           "#{piece.color.to_s[0]}#{piece.class.to_s[0]}"
+#         end
+#       end.join(" ")
+#     end.join("\n")
+#     # print footer
+#   end
+  
   def display_board
-    # print header
-    @board.map do |row|
-      row.map do |piece|
+    header = "  A  B  C  D  E  F  G  H"
+    puts header
+    i = 8
+    #@board.each do |row|
+    (0..7).each do |row|
+      print "#{i} "
+      # row.each do |col|
+      (0..7).each do |col|
+        # ebugger
+        piece = @board[row][col]
         if piece.class == NilClass
-          "  "
+          print "   "
         else
-          "#{piece.color.to_s[0]}#{piece.class.to_s[0]}"
+          print "#{piece.color.to_s[0]}#{piece.class.to_s[0]} "
         end
-      end.join(" ")
-    end.join("\n")
-    # print footer
+      end
+      print "#{i}\n"
+      i -= 1
+    end
+    puts header
   end
 end
+
