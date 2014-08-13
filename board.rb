@@ -8,7 +8,12 @@ class Board
   end
   
   def dup
-    Board.new(false)
+    duped_board = Board.new(false)
+    self.list_all_pieces.each do |piece|
+      duped_piece = piece.class.new(piece.position.dup, duped_board, piece.color)
+      duped_board[piece.position] = duped_piece
+    end
+    duped_board
   end
   
   def [](pos)
@@ -42,22 +47,46 @@ class Board
   end
   
   def move(start, end_pos)
+    old_x, old_y = start
+    new_x, new_y = end_pos
+    # debugger
+    piece = @board[old_x][old_y]
+    raise ArgumentError "No piece to move from there" if piece.nil? 
+    if piece.moves.include?(end_pos)
+      piece.position = end_pos
+      
+      # update board
+      @board[new_x][new_y] = piece
+      @board[old_x][old_y] = nil
+    else
+      raise ArgumentError "Invalid move"
+    end
   end
   
   def list_all_pieces
     @board.flatten.compact
   end
   
-  def color(color)
+  def all_pieces_of_color(color)
     list_all_pieces.select { |piece| piece.color == color }
   end
     
   def king_of_color(color)
-    color(color).select { |piece| piece.class.is_a?(King) }
+    all_pieces_of_color(color).select { |piece| piece.is_a?(King) }.first
+  end
+  
+  def opponent_color(color)
+    return :black if color == :white
+    :white
   end
   
   def in_check?(color)
-    
+    debugger
+    king_pos = king_of_color(color).position
+    moves = all_pieces_of_color(opponent_color(color)).map { |piece| piece.moves }
+    p moves
+    p king_pos
+    moves.include?(king_pos)
   end
     
 end

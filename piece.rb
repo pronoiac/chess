@@ -1,5 +1,6 @@
 class Piece
-  attr_reader :position, :board, :color
+  attr_reader :board, :color
+  attr_accessor :position
   
   DIAGONALS = [
     [-1, -1], [+1, -1], 
