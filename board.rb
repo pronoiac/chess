@@ -2,6 +2,8 @@ class Board
   
   attr_accessor :board
   
+  # TODO: Put internal methods into a private section
+  
   def initialize(pop = true)
     @board = Array.new(8) { Array.new(8) }
     populate_board if pop
@@ -65,6 +67,7 @@ class Board
     end
   end
   
+  # TODO: Refactor shared code from move and move!
   def move!(start, end_pos)
     # move without checking if it puts you in check
     old_x, old_y = start
@@ -115,6 +118,7 @@ class Board
   end
   
   def display_board
+    # print header
     @board.map do |row|
       row.map do |piece|
         if piece.class == NilClass
@@ -124,5 +128,6 @@ class Board
         end
       end.join(" ")
     end.join("\n")
+    # print footer
   end
 end

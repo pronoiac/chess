@@ -1,4 +1,5 @@
 class Pawn < SteppingPiece
+  # TODO: Consider breaking into helper methods
   def moves
     moves_array = []    
     old_x, old_y = @position

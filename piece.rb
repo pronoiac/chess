@@ -45,10 +45,10 @@ class Piece
     true
   end
   
-  def move_into_check?(pos)
-    x, y = pos
-    duped_board = @board.dup  
-  end
+  # def move_into_check?(pos)
+#     x, y = pos
+#     duped_board = @board.dup
+#   end
   
  
 end
