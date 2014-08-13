@@ -1,6 +1,6 @@
 class Board
   
-  attr_reader :board
+  attr_accessor :board
   
   def initialize(pop = true)
     @board = Array.new(8) { Array.new(8) }
@@ -8,10 +8,12 @@ class Board
   end
   
   def dup
+    # debugger
     duped_board = Board.new(false)
     self.list_all_pieces.each do |piece|
+      x, y = piece.position
       duped_piece = piece.class.new(piece.position.dup, duped_board, piece.color)
-      duped_board[piece.position] = duped_piece
+      duped_board.board[x][y] = duped_piece
     end
     duped_board
   end
@@ -52,7 +54,7 @@ class Board
     # debugger
     piece = @board[old_x][old_y]
     raise ArgumentError "No piece to move from there" if piece.nil? 
-    if piece.moves.include?(end_pos)
+    if piece.valid_moves.include?(end_pos)
       piece.position = end_pos
       
       # update board
@@ -61,6 +63,18 @@ class Board
     else
       raise ArgumentError "Invalid move"
     end
+  end
+  
+  def move!(start, end_pos)
+    # move without checking if it puts you in check
+    old_x, old_y = start
+    new_x, new_y = end_pos
+    piece = @board[old_x][old_y]
+    piece.position = end_pos
+    
+    # update board
+    @board[new_x][new_y] = piece
+    @board[old_x][old_y] = nil
   end
   
   def list_all_pieces
@@ -91,5 +105,24 @@ class Board
     end
     false
   end
-    
+  
+  def checkmate?(color)
+    return false unless in_check?(color)
+    return true if all_pieces_of_color(color).all? do |piece|
+      piece.valid_moves.empty?
+    end
+    false
+  end
+  
+  def display_board
+    @board.map do |row|
+      row.map do |piece|
+        if piece.class == NilClass
+          "  "
+        else
+          "#{piece.color.to_s[0]}#{piece.class.to_s[0]}"
+        end
+      end.join(" ")
+    end.join("\n")
+  end
 end

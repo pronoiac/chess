@@ -7,10 +7,12 @@ class SlidingPiece < Piece
         new_x, new_y = old_x + dx, old_y + dy
         break unless still_on_board?(new_x, new_y)
         square = @board[[new_x, new_y]]
-        unless square.nil?
+        if !square.nil?
+          #test self block
           if square.color == self.color
             break
           else 
+            #can take enemy but can't move further
             moves_array << [new_x, new_y]
             break
           end

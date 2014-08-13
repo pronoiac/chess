@@ -13,10 +13,11 @@ class SteppingPiece < Piece
       next unless still_on_board?(new_x, new_y)
       
       square = @board[[new_x, new_y]]
-      next unless square.nil? || square.color == self.color
-
-      # cool? then add to results.
-      moves_array << [new_x, new_y] 
+      
+      if square.nil? || square.color != self.color
+        #if it's empty or occupied by an emeny
+        moves_array << [new_x, new_y] 
+      end
     end
     moves_array
   end
