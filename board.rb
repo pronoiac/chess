@@ -1,7 +1,14 @@
 class Board
   
-  def initialize()
+  attr_reader :board
+  
+  def initialize(pop = true)
     @board = Array.new(8) { Array.new(8) }
+    populate_board if pop
+  end
+  
+  def dup
+    Board.new(false)
   end
   
   def [](pos)
@@ -33,11 +40,24 @@ class Board
       @board[row][col] = Pawn.new([row, col], self, color)
     end    
   end
-      
-  def in_check?(color)
-  end
   
   def move(start, end_pos)
+  end
+  
+  def list_all_pieces
+    @board.flatten.compact
+  end
+  
+  def color(color)
+    list_all_pieces.select { |piece| piece.color == color }
+  end
+    
+  def king_of_color(color)
+    color(color).select { |piece| piece.class.is_a?(King) }
+  end
+  
+  def in_check?(color)
+    
   end
     
 end

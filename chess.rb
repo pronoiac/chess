@@ -11,8 +11,6 @@ end
 
 
 
-
-
 def testing
   b = Board.new
   b.populate_board

@@ -22,6 +22,10 @@ class Piece
     @color = color
   end
   
+  def inspect
+    "#{@color[0]} - #{self.class.to_s[0..1]}"
+  end
+  
   def moves # => returns array of possible moves
   end
   
