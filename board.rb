@@ -81,12 +81,15 @@ class Board
   end
   
   def in_check?(color)
-    debugger
+    # debugger
     king_pos = king_of_color(color).position
-    moves = all_pieces_of_color(opponent_color(color)).map { |piece| piece.moves }
-    p moves
-    p king_pos
-    moves.include?(king_pos)
+    # p king_pos
+    all_pieces_of_color(opponent_color(color)).each do |piece| 
+      # p piece.moves 
+      return true if piece.moves.include?(king_pos)
+      # king included? return true
+    end
+    false
   end
     
 end

@@ -62,11 +62,15 @@ def testing_check
   b.populate_board
   puts "testing check (also checkmate) - \n f2 -> f3, e7 -> e5, g2 -> g4, d8 -> h4"
   b.move([6, 4], [4, 4])
+  puts "made move. in check? #{b.in_check?(:black)}"
   b.move([7, 3], [5, 5])
+  puts "made move. in check? #{b.in_check?(:black)}"
   b.move([7, 5], [4, 2])
+  puts "made move. in check? #{b.in_check?(:black)}"
   b.move([5, 5], [1, 5])
+  puts "made move. in check? #{b.in_check?(:black)}"
   p b
-  p b.in_check?(:black)
+  #p b.in_check?(:black)
   
 end
 
