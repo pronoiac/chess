@@ -1,3 +1,4 @@
+require 'colorize'
 class Board
   
   attr_accessor :board
@@ -122,21 +123,30 @@ class Board
   end
   
   def display_board
-    header = "  A  B  C  D  E  F  G  H"
+    header = " A B C D E F G H"
     puts header
     i = 8
     #@board.each do |row|
     (0..7).each do |row|
-      print "#{i}|"
+      print "#{i}"
       # row.each do |col|
       (0..7).each do |col|
         piece = @board[row][col]
+        sum = row + col
         if piece.class == NilClass
-          print "  "
+          if sum.odd?
+            print "  ".on_cyan
+          else
+            print "  "
+          end
         else
-          print "#{piece}"
+          if sum.odd?
+            print "#{piece}".on_cyan
+          else
+            print "#{piece}"
+          end
         end
-        print "|"
+       # print "|"
       end
       print "#{i}\n"
       i -= 1
