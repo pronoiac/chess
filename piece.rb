@@ -45,10 +45,21 @@ class Piece
     true
   end
   
-  # def move_into_check?(pos)
-#     x, y = pos
-#     duped_board = @board.dup
-#   end
+  def render
+    return case self
+    when Knight
+      color == :white ? "♘ " : "♞ "
+    when Bishop
+      color == :white ? "♗ " : "♝ "
+    when Rook
+      color == :white ? "♖ " : "♜ "
+    when Queen
+      color == :white ? "♕ " : "♛ "
+    when King
+      color == :white ? "♔ " : "♚ "
+    when Pawn
+      color == :white ? "♙ " : "♟ "  
+    end
+  end
   
- 
 end

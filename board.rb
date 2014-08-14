@@ -1,4 +1,5 @@
 require 'colorize'
+require "byebug"
 class Board
   
   attr_accessor :board
@@ -35,15 +36,12 @@ class Board
   end  
   
   def populate_base_row(row, color)
-    @board[row][0] = Rook.new([row, 0], self, color)
-    @board[row][1] = Knight.new([row, 1], self, color)
-    @board[row][2] = Bishop.new([row, 2], self, color)
-    @board[row][3] = Queen.new([row, 3], self, color)
-    @board[row][4] = King.new([row, 4], self, color)
-    @board[row][5] = Bishop.new([row, 5], self, color)
-    @board[row][6] = Knight.new([row, 6], self, color)
-    @board[row][7] = Rook.new([row, 7], self, color)
+    end_row = [ Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook ]
+    (0..7).each do |index|
+      @board[row][index] = end_row[index].new([row, index], self, color)
+    end
   end
+  
       
   def populate_pawn_row(row, color)
     (0..7).each do |col|
@@ -126,32 +124,28 @@ class Board
     header = " A B C D E F G H"
     puts header
     i = 8
-    #@board.each do |row|
+
     (0..7).each do |row|
-      print "#{i}"
-      # row.each do |col|
+      print i # will print human row number at start and end of row.
       (0..7).each do |col|
         piece = @board[row][col]
-        sum = row + col
-        if piece.class == NilClass
-          if sum.odd?
-            print "  ".on_cyan
-          else
-            print "  "
-          end
+        background = color_background (row + col)
+        if piece.nil?
+          text = "  "
         else
-          if sum.odd?
-            print "#{piece}".on_cyan
-          else
-            print "#{piece}"
-          end
+          text = piece.render
         end
-       # print "|"
-      end
-      print "#{i}\n"
+        print text.colorize(:background => background) 
+      end # /col, inner loop
+      puts i
       i -= 1
-    end
+    end # row, outer loop
     puts header
+  end
+  
+  def color_background(sum)
+    # white first, then light black. 
+    sum % 2 == 0 ? :default : :light_black    
   end
 end
 

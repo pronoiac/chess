@@ -36,8 +36,5 @@ class Pawn < SteppingPiece
     
     moves_array
   end
-  
-  def to_s
-    color == :white ? "♙ " : "♟ "
-  end
+
 end # /Pawns
