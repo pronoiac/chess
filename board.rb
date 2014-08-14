@@ -130,15 +130,11 @@ class Board
       print "#{i}|"
       # row.each do |col|
       (0..7).each do |col|
-        # ebugger
         piece = @board[row][col]
         if piece.class == NilClass
           print "  "
-        elsif
-          piece.class == Knight
-          print "#{piece.color.to_s[0]}N"
         else
-          print "#{piece.color.to_s[0]}#{piece.class.to_s[0]}"
+          print "#{piece}"
         end
         print "|"
       end

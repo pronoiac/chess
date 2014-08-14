@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Pawn < SteppingPiece
   # TODO: Consider breaking into helper methods
   def moves
@@ -34,5 +35,9 @@ class Pawn < SteppingPiece
     end
     
     moves_array
+  end
+  
+  def to_s
+    color == :white ? "♙ " : "♟ "
   end
 end # /Pawns
