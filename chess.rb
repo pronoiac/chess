@@ -18,15 +18,26 @@ class Game
   
   def run
     color = :white
-    until @board.checkmate?(:black) || @board.checkmate?(:white)       
-      @board.display_board
-      
-      input = @user1.play_turn(color)
-      @board.move(input[0], input[1])
-      
-      @board.checkmate?(color) 
-      color = @board.opponent_color(color)     
+    while true # @board.checkmate?(:black) || @board.checkmate?(:white)       
+      begin
+        @board.display_board
+            
+        input = @user1.play_turn(color)
+        @board.move(input[0], input[1])
+        if @board.in_check?(color)
+          puts "#{color} in check!"
+        end
+        break if @board.checkmate?(color) 
+        color = @board.opponent_color(color)
+        if @board.in_check?(color)
+          puts "#{color} in check!"
+        end        
+      rescue ArgumentError => myError
+        puts myError.message
+        retry
+      end
     end
+    puts "#{color} loses!" 
   end
 end
 

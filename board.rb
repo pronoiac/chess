@@ -55,7 +55,7 @@ class Board
     new_x, new_y = end_pos
     # debugger
     piece = @board[old_x][old_y]
-    raise ArgumentError "No piece to move from there" if piece.nil? 
+    raise ArgumentError.new("No piece to move from there") if piece.nil? 
     if piece.valid_moves.include?(end_pos)
       piece.position = end_pos
       
@@ -63,7 +63,7 @@ class Board
       @board[new_x][new_y] = piece
       @board[old_x][old_y] = nil
     else
-      raise ArgumentError "Invalid move"
+      raise ArgumentError.new("Invalid move")
     end
   end
   
@@ -117,36 +117,26 @@ class Board
     false
   end
   
-  # def display_board
-#     # print header
-#     @board.map do |row|
-#       row.map do |piece|
-#         if piece.class == NilClass
-#           "  "
-#         else
-#           "#{piece.color.to_s[0]}#{piece.class.to_s[0]}"
-#         end
-#       end.join(" ")
-#     end.join("\n")
-#     # print footer
-#   end
-  
   def display_board
     header = "  A  B  C  D  E  F  G  H"
     puts header
     i = 8
     #@board.each do |row|
     (0..7).each do |row|
-      print "#{i} "
+      print "#{i}|"
       # row.each do |col|
       (0..7).each do |col|
         # ebugger
         piece = @board[row][col]
         if piece.class == NilClass
-          print "   "
+          print "  "
+        elsif
+          piece.class == Knight
+          print "#{piece.color.to_s[0]}N"
         else
-          print "#{piece.color.to_s[0]}#{piece.class.to_s[0]} "
+          print "#{piece.color.to_s[0]}#{piece.class.to_s[0]}"
         end
+        print "|"
       end
       print "#{i}\n"
       i -= 1
