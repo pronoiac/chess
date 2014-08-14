@@ -23,14 +23,14 @@ class Game
         @board.display_board
             
         input = @user1.play_turn(color)
-        @board.move(input[0], input[1])
-        if @board.in_check?(color)
-          puts "#{color} in check!"
-        end
-        break if @board.checkmate?(color) 
+        @board.move(input[0], input[1], color)
         color = @board.opponent_color(color)
         if @board.in_check?(color)
-          puts "#{color} in check!"
+          puts "post: #{color} in check!"
+          if @board.checkmate?(color)
+            puts "And mate!"
+            break
+          end
         end        
       rescue ArgumentError => myError
         puts myError.message

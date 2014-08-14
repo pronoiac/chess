@@ -50,11 +50,15 @@ class Board
     end    
   end
   
-  def move(start, end_pos)
+  def move(start, end_pos, color)
     old_x, old_y = start
     new_x, new_y = end_pos
     # debugger
     piece = @board[old_x][old_y]
+    unless piece.color == color
+      raise ArgumentError.new("Not your piece to move")
+    end
+    
     raise ArgumentError.new("No piece to move from there") if piece.nil? 
     if piece.valid_moves.include?(end_pos)
       piece.position = end_pos
